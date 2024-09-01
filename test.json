@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "max_idle_connections": 250,
   "timeout": "3000ms",
   "read_timeout": "0s",

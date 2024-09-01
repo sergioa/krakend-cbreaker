@@ -11,15 +11,15 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/proxy"
+	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v2/proxy"
 )
 
 func BenchmarkNewCircuitBreakerMiddleware_ok(b *testing.B) {
 	p := NewMiddleware(&cfg)(dummyProxy(&proxy.Response{}, nil))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		p(context.Background(), &proxy.Request{
+		_, _ = p(context.Background(), &proxy.Request{
 			Path: "/tupu",
 		})
 	}
@@ -29,7 +29,7 @@ func BenchmarkNewCircuitBreakerMiddleware_ko(b *testing.B) {
 	p := NewMiddleware(&cfg)(dummyProxy(nil, errors.New("sample error")))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		p(context.Background(), &proxy.Request{
+		_, _ = p(context.Background(), &proxy.Request{
 			Path: "/tupu",
 		})
 	}
@@ -40,7 +40,7 @@ func BenchmarkNewCircuitBreakerMiddleware_burst(b *testing.B) {
 	p := NewMiddleware(&cfg)(burstProxy(&proxy.Response{}, err, 100, 6))
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		p(context.Background(), &proxy.Request{
+		_, _ = p(context.Background(), &proxy.Request{
 			Path: "/tupu",
 		})
 	}

@@ -1,7 +1,5 @@
-//
 // Copyright 2011 - 2018 Schibsted Products & Technology AS.
 // Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root.
-//
 package cbreaker
 
 import (
@@ -9,13 +7,12 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/proxy"
-
+	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v2/proxy"
 	"net/http"
 )
 
-var Backend500Error error = errors.New("Backend500Error")
+var Backend500Error = errors.New("Backend500Error")
 
 func TestNewMiddleware_multipleNext(t *testing.T) {
 	defer func() {
@@ -45,19 +42,19 @@ func TestNewMiddleware_zeroConfig(t *testing.T) {
 		t.Errorf("Comand name was expected to be CommandName, but it's %s", data.CommandName)
 	}
 	if data.SleepWindow != 10 {
-		t.Errorf("SleepWindow was expected to be 10, but it's %i", data.SleepWindow)
+		t.Errorf("SleepWindow was expected to be 10, but it's %d", data.SleepWindow)
 	}
 	if data.MaxConcurrentRequests != 15 {
-		t.Errorf("MaxConcurrentRequests was expected to be 15, but it's %i", data.MaxConcurrentRequests)
+		t.Errorf("MaxConcurrentRequests was expected to be 15, but it's %d", data.MaxConcurrentRequests)
 	}
 	if data.ErrorPercentThreshold != 50 {
-		t.Errorf("ErrorPercentThreshold was expected to be 50, but it's %i", data.ErrorPercentThreshold)
+		t.Errorf("ErrorPercentThreshold was expected to be 50, but it's %d", data.ErrorPercentThreshold)
 	}
 	if data.RequestVolumeThreshold != 2 {
-		t.Errorf("SleepWindow was expected to be 2, but it's %i", data.RequestVolumeThreshold)
+		t.Errorf("SleepWindow was expected to be 2, but it's %d", data.RequestVolumeThreshold)
 	}
 	if data.Timeout != 10 {
-		t.Errorf("Timeout was expected to be 10, but it's %i", data.Timeout)
+		t.Errorf("Timeout was expected to be 10, but it's %d", data.Timeout)
 	}
 }
 

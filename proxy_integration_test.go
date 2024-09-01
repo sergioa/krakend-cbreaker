@@ -1,24 +1,21 @@
-//
 // Copyright 2011 - 2018 Schibsted Products & Technology AS.
 // Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root.
-//
 package cbreaker
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/smarty/assertions"
+	vegeta "github.com/tsenart/vegeta/lib"
 	"log"
+	"net/http"
 	"os"
 	"testing"
 	"time"
 
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/logging"
-	"github.com/devopsfaith/krakend/proxy"
-	kgin "github.com/devopsfaith/krakend/router/gin"
-
-	"github.com/gin-gonic/gin"
-
-	"github.com/smartystreets/assertions"
-	"github.com/tsenart/vegeta/lib"
+	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v2/logging"
+	"github.com/luraproject/lura/v2/proxy"
+	kgin "github.com/luraproject/lura/v2/router/gin"
 )
 
 func setup() {
@@ -45,7 +42,7 @@ func ApiGateway() {
 		log.Fatal("ERROR:", err.Error())
 	}
 
-	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(BackendFactory(proxy.CustomHTTPProxyFactory(proxy.NewHTTPClient)), logger), logger)
+	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(BackendFactory(proxy.HTTPProxyFactory(http.DefaultClient)), logger), logger)
 	routerFactory.New().Run(serviceConfig)
 }
 
@@ -56,11 +53,11 @@ func DummyServer() {
 			"message": "boom!",
 		})
 	})
-	r.Run(":8000")
+	_ = r.Run(":8000")
 }
 
 func TestCircuitBreaker(t *testing.T) {
-	rate := uint64(4) // per second
+	rate := int(4) // per second
 	duration := 2 * time.Second
 	targeter := vegeta.NewStaticTargeter(vegeta.Target{
 		Method: "GET",
@@ -69,7 +66,7 @@ func TestCircuitBreaker(t *testing.T) {
 	attacker := vegeta.NewAttacker()
 
 	var metrics vegeta.Metrics
-	for res := range attacker.Attack(targeter, rate, duration) {
+	for res := range attacker.Attack(targeter, vegeta.ConstantPacer{Freq: rate, Per: time.Second}, duration, "attacker") {
 		metrics.Add(res)
 	}
 	metrics.Close()

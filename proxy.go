@@ -8,8 +8,8 @@ package cbreaker
 import (
 	"context"
 
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/proxy"
+	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v2/proxy"
 )
 
 // BackendFactory adds a cb middleware wrapping the internal factory

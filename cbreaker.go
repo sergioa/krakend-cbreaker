@@ -6,8 +6,8 @@
 package cbreaker
 
 import (
-	"github.com/afex/hystrix-go/hystrix"
-	"github.com/devopsfaith/krakend/config"
+	"github.com/luraproject/lura/v2/config"
+	"github.com/sergioa/hystrix-go/hystrix"
 )
 
 // Namespace is the key to use to store and access the custom config data
