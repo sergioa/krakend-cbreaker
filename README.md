@@ -14,13 +14,14 @@ package main
 
 import (
 	"log"
+	"net/http"
 	"os"
 
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/logging"
 	"github.com/luraproject/lura/v2/proxy"
 	kgin "github.com/luraproject/lura/v2/router/gin"
-	cbreaker "github.com/sergioa/krakend-cbreaker"
+	cb "github.com/sergioa/krakend-cbreaker"
 )
 
 func ApiGateway() {
@@ -35,7 +36,7 @@ func ApiGateway() {
 		log.Fatal("ERROR:", err.Error())
 	}
 
-	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(BackendFactory(proxy.HTTPProxyFactory(http.DefaultClient)), logger), logger)
+	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(cb.BackendFactory(proxy.HTTPProxyFactory(http.DefaultClient)), logger), logger)
 	routerFactory.New().Run(serviceConfig)
 
 }
