@@ -5,23 +5,30 @@ package cbreaker
 import (
 	"context"
 	"errors"
-	"testing"
-
 	"github.com/luraproject/lura/v2/config"
 	"github.com/luraproject/lura/v2/proxy"
 	"net/http"
+	"testing"
 )
 
 var Backend500Error = errors.New("Backend500Error")
 
-/*func TestNewMiddleware_multipleNext(t *testing.T) {
+func TestNewMiddleware_multipleNext(t *testing.T) {
 	defer func() {
 		if r := recover(); r != proxy.ErrTooManyProxies {
 			t.Errorf("The code did not panic\n")
 		}
 	}()
-	NewMiddleware(&config.Backend{})(proxy.NoopProxy, proxy.NoopProxy)
-}*/
+	NewMiddleware(&config.Backend{
+		ExtraConfig: map[string]interface{}{
+			Namespace: map[string]interface{}{
+				"command_name":            "test_cmd",
+				"timeout":                 100.0,
+				"max_concurrent_requests": 100.0,
+				"error_percent_threshold": 1.0,
+			},
+		}})(proxy.NoopProxy, proxy.NoopProxy)
+}
 
 func TestNewMiddleware_zeroConfig(t *testing.T) {
 	cfg := &config.Backend{
