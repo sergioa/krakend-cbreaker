@@ -31,11 +31,11 @@ func NewMiddleware(remote *config.Backend) proxy.Middleware {
 		if len(next) > 1 {
 			panic(proxy.ErrTooManyProxies)
 		}
-		return NewCbRequest(cb, next[0])
+		return NewCircuitBreakerRequest(cb, next[0])
 	}
 }
 
-func NewCbRequest(cb *HystrixCommand, next proxy.Proxy) proxy.Proxy {
+func NewCircuitBreakerRequest(cb *HystrixCommand, next proxy.Proxy) proxy.Proxy {
 	var response *proxy.Response
 	return func(ctx context.Context, request *proxy.Request) (*proxy.Response, error) {
 		err := cb.Execute(func() error {

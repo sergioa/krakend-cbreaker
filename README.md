@@ -1,6 +1,6 @@
 # krakend-cbreaker
 
-Krankend cirbuit breaker implementation based on [github.com/afex/hystrix-go](github.com/afex/hystrix-go)
+Krankend circuit breaker implementation based on [github.com/afex/hystrix-go](github.com/afex/hystrix-go)
 
 ## Implementation
 It's based on a new backend factory which can be used by any ProxyFactory
@@ -10,17 +10,17 @@ See an usage example [here](./proxy_integration_test.go)
 
 ```go
 
+package main
+
 import (
 	"log"
 	"os"
-	"testing"
-	"time"
 
-  cbreaker "github.com/schibsted/krakend-cbreaker"
-	"github.com/devopsfaith/krakend/config"
-	"github.com/devopsfaith/krakend/logging"
-	"github.com/devopsfaith/krakend/proxy"
-  kgin "github.com/devopsfaith/krakend/router/gin"
+	"github.com/luraproject/lura/v2/config"
+	"github.com/luraproject/lura/v2/logging"
+	"github.com/luraproject/lura/v2/proxy"
+	kgin "github.com/luraproject/lura/v2/router/gin"
+	cbreaker "github.com/sergioa/krakend-cbreaker"
 )
 
 func ApiGateway() {
@@ -35,8 +35,9 @@ func ApiGateway() {
 		log.Fatal("ERROR:", err.Error())
 	}
 
-	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(cbreaker.BackendFactory(proxy.CustomHTTPProxyFactory(proxy.NewHTTPClient)), logger), logger)
+	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(BackendFactory(proxy.HTTPProxyFactory(http.DefaultClient)), logger), logger)
 	routerFactory.New().Run(serviceConfig)
+
 }
 ```
 
@@ -70,7 +71,7 @@ For a more detailed description please, visit: [https://github.com/Netflix/Hystr
 ### Example
 ```yml
 {
-  "version": 2,
+  "version": 3,
   "max_idle_connections": 250,
   "timeout": "3000ms",
   "read_timeout": "0s",
