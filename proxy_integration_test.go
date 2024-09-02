@@ -44,6 +44,7 @@ func ApiGateway() {
 
 	routerFactory := kgin.DefaultFactory(proxy.NewDefaultFactory(BackendFactory(proxy.HTTPProxyFactory(http.DefaultClient)), logger), logger)
 	routerFactory.New().Run(serviceConfig)
+
 }
 
 func DummyServer() {
@@ -62,6 +63,9 @@ func TestCircuitBreaker(t *testing.T) {
 	targeter := vegeta.NewStaticTargeter(vegeta.Target{
 		Method: "GET",
 		URL:    "http://localhost:8080/cbcrash",
+		Header: map[string][]string{
+			"Cache-Control": {"no-cache"},
+		},
 	})
 	attacker := vegeta.NewAttacker()
 
